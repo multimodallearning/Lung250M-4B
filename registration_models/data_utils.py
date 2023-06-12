@@ -6,8 +6,7 @@ import torch.nn.functional as F
 from glob import glob
 from tqdm import trange,tqdm
 import sys
-sys.path.insert(0,'src/')
-sys.path.insert(0,'corrfield/')
+sys.path.insert(0,'../corrfield/')
 from foerstner import foerstner_kpts 
 from vxmplusplus_utils import MINDSSC
 

@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 import torch
 import sys
-sys.path.insert(0,'src/')
 from vxmplusplus_utils import get_vxmpp_models,return_crops
-sys.path.insert(0,'corrfield/')
+sys.path.insert(0,'../corrfield/')
 from thin_plate_spline import *
 from tqdm import trange
 from vxmplusplus_utils import adam_mind
@@ -82,7 +81,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description = 'inference of VoxelMorph++ on Lung250M-4B')
 
-    parser.add_argument('-M',  '--model',        default='models/voxelmorphplusplus.pth', help="model file (pth)")
+    parser.add_argument('-M',  '--model',        default='voxelmorphplusplus.pth', help="model file (pth)")
     parser.add_argument('-m',  '--maskfolder',   default='masksTs', help="mask folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-I',  '--imgfolder',    default='imagesTs', help="image folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-O',  '--outfile',      default='predictions.pth', help="output file for keypoint displacement predictions")
