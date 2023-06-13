@@ -17,8 +17,8 @@ def main(args):
     unet_model,heatmap,mesh = get_vxmpp_models()
 
 
-    lms_validation = torch.load('evaluation/lms_validation.pth')
-    datasets = ['EMPIRE10']*12+['NLSTtrain']*22+['4D-Lung-1']*20+['LungCT-L2R']*30+['VentilCT']*20+['COPDgene']*10+['NLSTtest']*10
+    #lms_validation = torch.load('evaluation/lms_validation.pth')
+    #datasets = ['EMPIRE10']*12+['NLSTtrain']*22+['4D-Lung-1']*20+['LungCT-L2R']*30+['VentilCT']*20+['COPDgene']*10+['NLSTtest']*10
 
 
 
@@ -34,7 +34,7 @@ def main(args):
         ii = int(case_list[case].split('case_')[1])
 
         ##MASKED INPUT IMAGES ARE HALF-RESOLUTION
-        dataset = datasets[ii]
+        #dataset = datasets[ii]
         with torch.no_grad():
             fixed_img = img_insp_all[case]
             moving_img = img_exp_all[case]
@@ -65,17 +65,25 @@ def main(args):
         moving_mind = mind_exp_all[case].view(1,-1,H//2,W//2,D//2).cuda()
 
         pred_xyz,disp_smooth,dense_flow = adam_mind(keypts_fix,disp_est,fixed_mind,moving_mind,H,W,D)
-        predictions.append(pred_xyz.cpu())
+        predictions.append(pred_xyz.cpu()+keypts_fix.cpu())
         ##EVALUATION WITH MANUAL LANDMARKS PROVIDED WITH LUNG-250M-4B
-        tre0 = (lms_validation[str(ii)][:,:3]-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
-        lms1 = torch.flip((lms_validation[str(ii)][:,:3]-torch.tensor([H/2,W/2,D/2]))/torch.tensor([H/2,W/2,D/2]),(1,))
-        lms_disp = F.grid_sample(disp_smooth.cpu(),lms1.view(1,-1,1,1,3)).squeeze().t()
+        #tre0 = (lms_validation[str(ii)][:,:3]-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
+        #lms1 = torch.flip((lms_validation[str(ii)][:,:3]-torch.tensor([H/2,W/2,D/2]))/torch.tensor([H/2,W/2,D/2]),(1,))
+        #lms_disp = F.grid_sample(disp_smooth.cpu(),lms1.view(1,-1,1,1,3)).squeeze().t()
 
-        tre2 = (lms_validation[str(ii)][:,:3]+lms_disp-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
-        print(dataset+'-TRE init: '+str('%0.3f'%tre0.mean())+'mm; net+adam: '+str('%0.3f'%tre2.mean())+'mm;')
+        #tre2 = (lms_validation[str(ii)][:,:3]+lms_disp-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
+        #print(dataset+'-TRE init: '+str('%0.3f'%tre0.mean())+'mm; net+adam: '+str('%0.3f'%tre2.mean())+'mm;')
 
-    torch.save({'predictions':predictions,'case_list':case_list,'keypts_insp_all':keypts_insp_all},args.outfile)
+    torch.save({'keypts_mov_predict':predictions,'case_list':case_list,'keypts_fix':keypts_insp_all},args.outfile)
+    if(args.outfolder is not None):
+        for i in range(len(case_list)):
+            case = case_list[i]
+            output_path = args.outfolder+'/'+case
+            np.savetxt('{}.csv'.format(output_path), torch.cat([keypts_insp_all[i], keypts_mov_predict[i]], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
 
+
+        
+        
 
 if __name__ == "__main__":
 
@@ -85,6 +93,7 @@ if __name__ == "__main__":
     parser.add_argument('-m',  '--maskfolder',   default='masksTs', help="mask folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-I',  '--imgfolder',    default='imagesTs', help="image folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-O',  '--outfile',      default='predictions.pth', help="output file for keypoint displacement predictions")
+    parser.add_argument('-o',  '--outfolder',    default=None, help="output folder for individual keypoint displacement predictions")
 
     #args = parser.parse_args(args=[])
     args = parser.parse_args()
