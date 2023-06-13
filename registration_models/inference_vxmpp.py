@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description = 'inference of VoxelMorph++ on Lung250M-4B')
 
-    parser.add_argument('-M',  '--model',        default='voxelmorphplusplus.pth', help="model file (pth)")
+    parser.add_argument('-M',  '--model',        default='registration_models/voxelmorphplusplus.pth', help="model file (pth)")
     parser.add_argument('-m',  '--maskfolder',   default='masksTs', help="mask folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-I',  '--imgfolder',    default='imagesTs', help="image folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-O',  '--outfile',      default='predictions.pth', help="output file for keypoint displacement predictions")
