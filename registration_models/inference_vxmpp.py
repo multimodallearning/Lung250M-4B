@@ -80,7 +80,7 @@ def main(args):
         for i in range(len(case_list)):
             case = case_list[i]
             output_path = args.outfolder+'/'+case
-            np.savetxt('{}.csv'.format(output_path), torch.cat([keypts_insp_all[i], keypts_mov_predict[i]], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
+            np.savetxt('{}.csv'.format(output_path), torch.cat([keypts_insp_all[i], predictions[i]], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
 
 
         
