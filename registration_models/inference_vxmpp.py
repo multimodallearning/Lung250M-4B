@@ -2,7 +2,7 @@
 import torch
 import sys
 from vxmplusplus_utils import get_vxmpp_models,return_crops
-sys.path.insert(0,'../corrfield/')
+sys.path.insert(0,'corrfield/')
 from thin_plate_spline import *
 from tqdm import trange
 from vxmplusplus_utils import adam_mind
@@ -17,7 +17,7 @@ def main(args):
     unet_model,heatmap,mesh = get_vxmpp_models()
 
 
-    lms_validation = torch.load('lms_validation.pth')
+    lms_validation = torch.load('evaluation/lms_validation.pth')
     datasets = ['EMPIRE10']*12+['NLSTtrain']*22+['4D-Lung-1']*20+['LungCT-L2R']*30+['VentilCT']*20+['COPDgene']*10+['NLSTtest']*10
 
 
