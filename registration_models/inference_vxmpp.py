@@ -80,7 +80,10 @@ def main(args):
         for i in range(len(case_list)):
             case = case_list[i]
             output_path = args.outfolder+'/'+case
-            np.savetxt('{}.csv'.format(output_path), torch.cat([keypts_insp_all[i].squeeze(), predictions[i]], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
+            H,W,D = orig_shapes_all[i]
+            kpts_fix = torch.flip(keypts_insp_all[i].squeeze(),(1,))*torch.tensor([H/2,W/2,D/2])+torch.tensor([H/2,W/2,D/2])
+            kpts_moved = torch.flip(predictions[i].squeeze(),(1,))*torch.tensor([H/2,W/2,D/2])+torch.tensor([H/2,W/2,D/2])
+            np.savetxt('{}.csv'.format(output_path), torch.cat([kpts_fix, kpts_moved], dim=1).cpu().numpy(), delimiter=",", fmt='%.3f')
 
 
         
