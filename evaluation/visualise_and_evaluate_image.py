@@ -12,11 +12,12 @@ from glob import glob
 from io import BytesIO
 import copy
 sys.path.insert(0,'corrfield/')
+
 from thin_plate_spline import thin_plate_dense
 #torch.backends.cuda.matmul.allow_tf32 = False
 #torch.backends.cudnn.allow_tf32 = False
 
-@st.cache_data
+#@st.cache_data
 def get_warped_pair(_cf,_img_moving):
     H,W,D = _img_moving.shape[-3:]
     
@@ -49,11 +50,17 @@ def main(args):
     img_fixed = torch.from_numpy(nib.load(base_img+'/'+case+'_1.nii.gz').get_fdata()).float()
     img_moving = torch.from_numpy(nib.load(base_img+'/'+case+'_2.nii.gz').get_fdata()).float()
 
+
     dense_flow = None
-    cf = None
+    cf = None; tre_aff = None
     if(args.outfolder!='None'):
         cf = torch.from_numpy(np.loadtxt(args.outfolder+'/'+case+'.csv',delimiter=',')).float()
         img_warped,dense_flow = get_warped_pair(cf,img_moving)
+        cf_mean = cf.mean(0,keepdim=True)
+        cf_std = cf.std(0,keepdim=True)
+
+        cf_aff = (cf[:,:3]-cf_mean[:,:3])*cf_std[:,3:]/cf_std[:,:3]+cf_mean[:,3:]
+        tre_aff = (cf_aff-cf[:,3:]).pow(2).sum(-1).sqrt()
 
     H,W,D = img_fixed.shape
 
@@ -99,9 +106,8 @@ def main(args):
             lms1 = torch.flip((lms_validation[str(ii)][:,:3]-torch.tensor([H/2,W/2,D/2]))/torch.tensor([H/2,W/2,D/2]),(1,))
             lms_disp1 = F.grid_sample(dense_flow.permute(0,4,1,2,3).cpu(),lms1.view(1,-1,1,1,3)).squeeze().t()
             lms_disp = torch.flip(lms_disp1,(1,))*torch.tensor([H/2,W/2,D/2])
+            ax.plot(torch.sort(tre_aff,descending=False).values.numpy(),torch.linspace(0,1,tre_aff.shape[0]).numpy(),label='affine '+str('%0.2f'%(tre_aff.mean()))+' mm')
             tre2 = (lms_validation[str(ii)][:,:3]+lms_disp-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
-            
-
             ax.plot(torch.sort(tre2,descending=False).values.numpy(),torch.linspace(0,1,tre2.shape[0]).numpy(),label='registered '+str('%0.2f'%(tre2.mean()))+' mm')
             
 
