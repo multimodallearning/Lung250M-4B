@@ -7,6 +7,7 @@ from thin_plate_spline import *
 from tqdm import trange
 from vxmplusplus_utils import adam_mind
 import argparse
+import numpy as np
 
 from data_utils import read_image_folder
 
