@@ -1,3 +1,4 @@
+import os
 import numpy as np
 import torch
 import torch.utils.data
@@ -9,9 +10,13 @@ class Lung250MDataset(torch.utils.data.Dataset):
         self.is_train = True if phase == 'train' else False
         self.split = split
 
-        self.pcd_template = '/share/data_zoe3/falta/temp/vessel_data/full/vessel_cloud_new/case_{:03d}_{}.pth'
-        self.gt_template = '/share/data_supergrover3/heinrich/temp/neurips_full/case_{:03d}.pth'
-        self.idx_16k = torch.load('all_ind_16384_train.pth', map_location='cpu')
+        if self.split == 'train':
+            self.pcd_template = os.path.join(args.cloudfolder_train, 'case_{:03d}_{}.pth')
+            self.gt_template = os.path.join(args.supfolder_train, 'case_{:03d}.pth')
+        else:
+            self.pcd_template = os.path.join(args.cloudfolder_val, 'case_{:03d}_{}.pth')
+            self.gt_template = os.path.join(args.supfolder_val, 'case_{:03d}.pth')
+        self.idx_16k = torch.load('../../ind_16384_train.pth', map_location='cpu')
 
         if split == 'train':
             val_cases = np.array([2, 8, 54, 55, 56, 94, 97])
