@@ -24,7 +24,7 @@ Generate Vessel Segmentations (Generate ```.../segTr``` and ```../segTs```)
 for i in {000..123}; do cp ../imagesTr/case_${i}_1.nii.gz temp_imagesTr_0000/case_${i}_1_0000.nii.gz; cp ../imagesTr/case_${i}_2.nii.gz temp_imagesTr_0000/case_${i}_2_0000.nii.gz;../imagesTs/case_${i}_1.nii.gz temp_imagesTs_0000/case_${i}_1_0000.nii.gz; cp ../imagesTs/case_${i}_2.nii.gz temp_imagesTs_0000/case_${i}_2_0000.nii.gz; done
 ```
 6. Run nnUNet inference: ```nnUNet_predict -i temp_imagesTr_0000/ -o ../segTr/ -t 500 -m 3d_lowres``` and ```nnUNet_predict -i temp_imagesTs_0000/ -o ../segTs/ -t 500 -m 3d_fullres -f all --disable_tta -tr nnUNetTrainerV2_noMirroring```
-7. Delete the temporary folders temp_imagesTr_0000 and temp_imagesTs_0000
+7. Delete the temporary folders ```temp_imagesTr_0000``` and ```temp_imagesTs_0000```
 
 Extract point clouds and features (Generate ```../cloudsTr``` and ```../cloudsTs```)
 1. Run ```python pc_generate.py```
