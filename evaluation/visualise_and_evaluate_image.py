@@ -33,146 +33,92 @@ def get_warped_pair(_cf,_img_moving):
     return warped_img,dense_flow
     
 def main(args):
-    if args.interpolation == 'tps':
-        st.title('Visualise lung registration')
+    st.title('Visualise lung registration')
 
-        st.write('passed argument ',args.imgfolder,args.outfolder)
-        base_img = args.imgfolder
-        img_list = [i.split('/')[1] for i in sorted(glob(base_img+'/*.nii.gz'))]
+    st.write('passed argument ',args.imgfolder,args.outfolder)
+    base_img = args.imgfolder
+    img_list = [i.split('/')[1] for i in sorted(glob(base_img+'/*.nii.gz'))]
 
-        img_list1 = [i.replace('_1.nii.gz','').replace('_2.nii.gz','') for i in img_list]
-        if(len(img_list1) != 2*len(set(img_list1))):
-            raise Exception("Not all images seem to have both _1.nii.gz and _2.nii.gz")
-        case_list = sorted(list(set(img_list1)))
+    img_list1 = [i.replace('_1.nii.gz','').replace('_2.nii.gz','') for i in img_list]
+    if(len(img_list1) != 2*len(set(img_list1))):
+        raise Exception("Not all images seem to have both _1.nii.gz and _2.nii.gz")
+    case_list = sorted(list(set(img_list1)))
 
-        case = st.select_slider("Select #case from "+base_img, options=case_list)
+    case = st.select_slider("Select #case from "+base_img, options=case_list)
 
-        img_fixed = torch.from_numpy(nib.load(base_img+'/'+case+'_1.nii.gz').get_fdata()).float()
-        img_moving = torch.from_numpy(nib.load(base_img+'/'+case+'_2.nii.gz').get_fdata()).float()
+    img_fixed = torch.from_numpy(nib.load(base_img+'/'+case+'_1.nii.gz').get_fdata()).float()
+    img_moving = torch.from_numpy(nib.load(base_img+'/'+case+'_2.nii.gz').get_fdata()).float()
 
 
-        dense_flow = None
-        cf = None; tre_aff = None
+    dense_flow = None
+    cf = None; tre_aff = None
+    if(args.outfolder!='None'):
+        cf = torch.from_numpy(np.loadtxt(args.outfolder+'/'+case+'.csv',delimiter=',')).float()
+        img_warped,dense_flow = get_warped_pair(cf,img_moving)
+        cf_mean = cf.mean(0,keepdim=True)
+        cf_std = cf.std(0,keepdim=True)
+
+        cf_aff = (cf[:,:3]-cf_mean[:,:3])*cf_std[:,3:]/cf_std[:,:3]+cf_mean[:,3:]
+        tre_aff = (cf_aff-cf[:,3:]).pow(2).sum(-1).sqrt()
+
+    H,W,D = img_fixed.shape
+
+    c1,c2 = st.columns(2)
+    with c1:
+        y = st.slider("slide in AP", min_value=20, max_value=W-20, value=W//2, step=10)
+    with c2:
+        int_max = st.slider("HU window (max)", min_value=-800, max_value=1200, value=-200, step=50)
+#
+    col1,col2 = st.columns(2)
+    with col1:
+        fig, ax = plt.subplots()
+        st.write('before alignment')
+        ax.imshow(torch.clamp(img_fixed[:,y].t().flip(0),-1000,int_max),'Blues')
+        ax.imshow(torch.clamp(img_moving[:,y].t().flip(0),-1000,int_max),'Oranges',alpha=.5)
+        ax.axis('off')
+        st.pyplot(fig)
+
+    with col2:
+        str_after = ''
         if(args.outfolder!='None'):
-            cf = torch.from_numpy(np.loadtxt(args.outfolder+'/'+case+'.csv',delimiter=',')).float()
-            img_warped,dense_flow = get_warped_pair(cf,img_moving)
-            cf_mean = cf.mean(0,keepdim=True)
-            cf_std = cf.std(0,keepdim=True)
+            str_after = 'after alignment'
+        st.write(str_after)
+        if(args.outfolder!='None'):
 
-            cf_aff = (cf[:,:3]-cf_mean[:,:3])*cf_std[:,3:]/cf_std[:,:3]+cf_mean[:,3:]
-            tre_aff = (cf_aff-cf[:,3:]).pow(2).sum(-1).sqrt()
-
-        H,W,D = img_fixed.shape
-
-        c1,c2 = st.columns(2)
-        with c1:
-            y = st.slider("slide in AP", min_value=20, max_value=W-20, value=W//2, step=10)
-        with c2:
-            int_max = st.slider("HU window (max)", min_value=-800, max_value=1200, value=-200, step=50)
-    #
-        col1,col2 = st.columns(2)
-        with col1:
             fig, ax = plt.subplots()
-            st.write('before alignment')
             ax.imshow(torch.clamp(img_fixed[:,y].t().flip(0),-1000,int_max),'Blues')
-            ax.imshow(torch.clamp(img_moving[:,y].t().flip(0),-1000,int_max),'Oranges',alpha=.5)
+            ax.imshow(torch.clamp(img_warped[:,y].t().flip(0),-1000,int_max),'Oranges',alpha=.5)
             ax.axis('off')
             st.pyplot(fig)
 
-        with col2:
-            str_after = ''
-            if(args.outfolder!='None'):
-                str_after = 'after alignment'
-            st.write(str_after)
-            if(args.outfolder!='None'):
+    if(args.validation!='None'):
+        ii = int(case.split('case_')[1])
 
-                fig, ax = plt.subplots()
-                ax.imshow(torch.clamp(img_fixed[:,y].t().flip(0),-1000,int_max),'Blues')
-                ax.imshow(torch.clamp(img_warped[:,y].t().flip(0),-1000,int_max),'Oranges',alpha=.5)
-                ax.axis('off')
-                st.pyplot(fig)
+        lms_validation = torch.load(args.validation)
+        tre0 = (lms_validation[str(ii)][:,:3]-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
+        st.write('statistics on landmark errors')
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot(torch.sort(tre0,descending=False).values.numpy(),torch.linspace(0,1,tre0.shape[0]).numpy(),label='before '+str('%0.2f'%(tre0.mean()))+' mm')
+        H,W,D = img_fixed.shape
 
-        if(args.validation!='None'):
-            ii = int(case.split('case_')[1])
-
-            lms_validation = torch.load(args.validation)
-            tre0 = (lms_validation[str(ii)][:,:3]-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
-            st.write('statistics on landmark errors')
-            fig, ax = plt.subplots(figsize=(6, 4))
-            ax.plot(torch.sort(tre0,descending=False).values.numpy(),torch.linspace(0,1,tre0.shape[0]).numpy(),label='before '+str('%0.2f'%(tre0.mean()))+' mm')
-            H,W,D = img_fixed.shape
-
-            if(dense_flow is not None):
-                lms1 = torch.flip((lms_validation[str(ii)][:,:3]-torch.tensor([H/2,W/2,D/2]))/torch.tensor([H/2,W/2,D/2]),(1,))
-                lms_disp1 = F.grid_sample(dense_flow.permute(0,4,1,2,3).cpu(),lms1.view(1,-1,1,1,3)).squeeze().t()
-                lms_disp = torch.flip(lms_disp1,(1,))*torch.tensor([H/2,W/2,D/2])
-                ax.plot(torch.sort(tre_aff,descending=False).values.numpy(),torch.linspace(0,1,tre_aff.shape[0]).numpy(),label='affine '+str('%0.2f'%(tre_aff.mean()))+' mm')
-                tre2 = (lms_validation[str(ii)][:,:3]+lms_disp-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
-                ax.plot(torch.sort(tre2,descending=False).values.numpy(),torch.linspace(0,1,tre2.shape[0]).numpy(),label='registered '+str('%0.2f'%(tre2.mean()))+' mm')
+        if(dense_flow is not None):
+            lms1 = torch.flip((lms_validation[str(ii)][:,:3]-torch.tensor([H/2,W/2,D/2]))/torch.tensor([H/2,W/2,D/2]),(1,))
+            lms_disp1 = F.grid_sample(dense_flow.permute(0,4,1,2,3).cpu(),lms1.view(1,-1,1,1,3)).squeeze().t()
+            lms_disp = torch.flip(lms_disp1,(1,))*torch.tensor([H/2,W/2,D/2])
+            ax.plot(torch.sort(tre_aff,descending=False).values.numpy(),torch.linspace(0,1,tre_aff.shape[0]).numpy(),label='affine '+str('%0.2f'%(tre_aff.mean()))+' mm')
+            tre2 = (lms_validation[str(ii)][:,:3]+lms_disp-lms_validation[str(ii)][:,3:]).pow(2).sum(-1).sqrt()
+            ax.plot(torch.sort(tre2,descending=False).values.numpy(),torch.linspace(0,1,tre2.shape[0]).numpy(),label='registered '+str('%0.2f'%(tre2.mean()))+' mm')
 
 
-            ax.set_xlim([0,30])
-            ax.set_xlabel('TRE in mm')
-            ax.set_ylabel('cumulative distribution')
-            ax.legend()
-            st.pyplot(fig)
+        ax.set_xlim([0,30])
+        ax.set_xlabel('TRE in mm')
+        ax.set_ylabel('cumulative distribution')
+        ax.legend()
+        st.pyplot(fig)
 
-            #buf = BytesIO()
-            #fig.savefig(buf, format="png")
-            #st.image(buf,width=400)
-
-    elif args.interpolation == 'gauss':
-        st.title('Evaluate lung registration')
-
-        st.write('passed argument ', args.imgfolder, args.outfolder)
-        base_img = args.imgfolder
-        img_list = [i.split('/')[1] for i in sorted(glob(base_img + '/*.nii.gz'))]
-
-        img_list1 = [i.replace('_1.nii.gz', '').replace('_2.nii.gz', '') for i in img_list]
-        if (len(img_list1) != 2 * len(set(img_list1))):
-            raise Exception("Not all images seem to have both _1.nii.gz and _2.nii.gz")
-        case_list = sorted(list(set(img_list1)))
-
-        case = st.select_slider("Select #case from " + base_img, options=case_list)
-
-        if (args.validation != 'None'):
-            ii = int(case.split('case_')[1])
-            lms_validation = torch.load(args.validation)
-            tre0 = (lms_validation[str(ii)][:, :3] - lms_validation[str(ii)][:, 3:]).pow(2).sum(-1).sqrt()
-
-            st.write('statistics on landmark errors')
-            fig, ax = plt.subplots(figsize=(6, 4))
-            ax.plot(torch.sort(tre0, descending=False).values.numpy(), torch.linspace(0, 1, tre0.shape[0]).numpy(),
-                    label='before ' + str('%0.2f' % (tre0.mean())) + ' mm')
-
-            pred = torch.from_numpy(np.loadtxt(os.path.join(args.outfolder, 'case_{:03d}.csv'.format(ii)), delimiter=',')).float()
-            pcd_src = pred[:, :3]
-            flow = pcd_src - pred[:, 3:]
-
-            lm_src = lms_validation['{}'.format(ii)][:, 3:]
-            lm_tgt = lms_validation['{}'.format(ii)][:, :3]
-            device = 'cuda'
-            pcd_src = pcd_src.unsqueeze(0).to(device)
-            flow = flow.unsqueeze(0).to(device)
-            lm_src = lm_src.unsqueeze(0).to(device)
-            lm_tgt = lm_tgt.unsqueeze(0).to(device)
-
-            gaussian_interpolation_sigma = 5.
-            sq_dist = (lm_src.unsqueeze(2).cuda() - pcd_src.unsqueeze(1)).square().sum(dim=3)
-            weights = torch.exp(-0.5 * sq_dist / gaussian_interpolation_sigma ** 2)
-            flow_on_lms = (weights.unsqueeze(3) * flow.unsqueeze(1)).sum(dim=2) / weights.unsqueeze(3).sum(dim=2)
-
-            epe_after = (lm_src + flow_on_lms - lm_tgt).square().sum(dim=2).sqrt()[0].cpu()
-
-            ax.plot(torch.sort(epe_after, descending=False).values.numpy(), torch.linspace(0, 1, epe_after.shape[0]).numpy(),
-                    label='registered ' + str('%0.2f' % (epe_after.mean())) + ' mm')
-
-            ax.set_xlim([0, 30])
-            ax.set_xlabel('TRE in mm')
-            ax.set_ylabel('cumulative distribution')
-            ax.legend()
-            st.pyplot(fig)
-
+        #buf = BytesIO()
+        #fig.savefig(buf, format="png")
+        #st.image(buf,width=400)
 
 if __name__ == "__main__":
     
@@ -180,7 +126,6 @@ if __name__ == "__main__":
     parser.add_argument('-I',  '--imgfolder',    default='imagesTs', help="image folder containing (/case_???_{1,2}.nii.gz)")
     parser.add_argument('-o',  '--outfolder',    default='None', help="output folder for individual keypoint displacement predictions")
     parser.add_argument('-v',  '--validation',    default='None', help="pth file with validation landmarks")
-    parser.add_argument('--interpolation', default='tps', help="tps for dense interpolation or gauss for sparse gaussian interpolation")
 
     args = parser.parse_args()
 
