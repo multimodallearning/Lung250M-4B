@@ -1,4 +1,5 @@
 imagesTs/
 masksTs/
 cloudsTs/
-
+__pycache__/
+*.pyc
