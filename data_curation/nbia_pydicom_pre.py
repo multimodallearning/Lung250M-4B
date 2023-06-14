@@ -51,9 +51,9 @@ def main(args):
 
     print("Downloading "+len(file_list)+" 3D images up to "+series_id+". this may take up to several minutes")
 
-    #cmd = '/opt/nbia-data-retriever/nbia-data-retriever --cli '+os.getcwd()+'/'+tmp_dir+'/manifest.tcia -d '+os.getcwd()+'/'+tmp_dir+' –f -q -v'
-    #tcia_proc = subprocess.Popen(['echo Y | '+cmd], shell=True)
-    #tcia_proc.communicate()
+    cmd = '/opt/nbia-data-retriever/nbia-data-retriever --cli '+os.getcwd()+'/'+tmp_dir+'/manifest.tcia -d '+os.getcwd()+'/'+tmp_dir+' –f -q -v'
+    tcia_proc = subprocess.Popen(['echo Y | '+cmd], shell=True)
+    tcia_proc.communicate()
     
     for case in nlst_case.keys():
         series_id = str(nlst_case[str(case)])
