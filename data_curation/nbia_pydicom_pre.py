@@ -49,7 +49,7 @@ def main(args):
             series_id = str(nlst_case[str(case)])
             f.writelines([nlst_list1[series_id],'\n',nlst_list2[series_id]])
 
-    print("Downloading "+len(file_list)+" 3D images up to "+series_id+". this may take up to several minutes")
+    print("Downloading "+str(len(file_list))+" 3D images up to "+series_id+". this may take up to several minutes")
 
     cmd = '/opt/nbia-data-retriever/nbia-data-retriever --cli '+os.getcwd()+'/'+tmp_dir+'/manifest.tcia -d '+os.getcwd()+'/'+tmp_dir+' –f -q -v'
     tcia_proc = subprocess.Popen(['echo Y | '+cmd], shell=True)
