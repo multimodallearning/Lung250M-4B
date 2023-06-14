@@ -6,11 +6,13 @@ channels:
   - conda-forge
   - defaults
 dependencies:
+  - nibabel=5.1.0=py39hf3d152e_2
   - numpy=1.21.2=py39h20f2e39_0
   - numpy-base=1.21.2=py39h79a1101_0
   - python_abi=3.9=2_cp39
   - pytorch=1.10.2=py3.9_cuda11.3_cudnn8.2.0_0
   - setuptools=58.0.4=py39h06a4308_0
+  - streamlit=1.23.1=pyhd8ed1ab_0
   - tqdm=4.50.2=py_0
   - yacs=0.1.6=py_0
   - pip:
