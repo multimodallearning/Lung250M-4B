@@ -20,3 +20,78 @@ streamlit run visualise_lungCT.py
 
 Here is some example output (abbreviated):
 ...
+
+
+# Dataset structure
+
+```
+    .
+    ├── ...
+    ├── segTs
+    │   ├── 002_1.nii.gz
+    │   ├── 002_2.nii.gz
+    │   ├── 008_1.nii.gz
+    │   └── ...
+    ├── segTr
+    │   ├── 001_1.nii.gz
+    │   ├── 001_2.nii.gz
+    │   ├── 003_1.nii.gz
+    │   └── ...
+    ├── masksTs
+    │   ├── 002_1.nii.gz
+    │   ├── 002_2.nii.gz
+    │   ├── 008_1.nii.gz
+    │   └── ...
+    ├── masksTr
+    │   ├── 001_1.nii.gz
+    │   ├── 001_2.nii.gz
+    │   ├── 003_1.nii.gz
+    │   └── ...
+    ├── imagesTs
+    │   ├── 002_1.nii.gz
+    │   ├── 002_2.nii.gz
+    │   ├── 008_1.nii.gz
+    │   └── ...
+    ├── imagesTr
+    │   ├── 001_1.nii.gz
+    │   ├── 001_2.nii.gz
+    │   ├── 003_1.nii.gz
+    │   └── ...
+    ├── corrfieldTr
+    │   ├── case_001.csv 
+    │   ├── case_003.csv
+    │   └── ...
+    ├── cloudsTr
+    │   ├── coordinates
+    │   │   ├── case_001_1.pth  --> list of three clouds: [8k, skeletonized, full]
+    │   │   ├── case_001_2.pth
+    │   │   ├── case_003_1.pth
+    │   │   └── ...
+    │   ├── distance
+    │   │   ├── case_001_1.pth  --> features from euclidean distance transform for the 3 clouds
+    │   │   ├── case_001_2.pth
+    │   │   ├── case_003_1.pth
+    │   │   └── ...
+    │   └── artery_vein
+    │       ├── case_001_1.pth  --> artery/vein labels for the 3 clouds
+    │       ├── case_001_2.pth
+    │       ├── case_003_1.pth
+    │       └── ...
+    ├── cloudsTs
+    │   ├── coordinates
+    │   │   ├── case_002_1.pth
+    │   │   ├── case_002_2.pth
+    │   │   ├── case_008_1.pth
+    │   │   └── ...
+    │   ├── distance
+    │   │   ├── case_002_1.pth
+    │   │   ├── case_002_2.pth
+    │   │   ├── case_008_1.pth
+    │   │   └── ...
+    │   └── artery_vein
+    │       ├── case_002_1.pth
+    │       ├── case_002_2.pth
+    │       ├── case_008_1.pth
+    │       └── ...
+    └── ...
+```
