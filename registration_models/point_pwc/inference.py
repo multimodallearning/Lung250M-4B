@@ -1,5 +1,6 @@
 import argparse
 import os
+import numpy as np
 
 from defaults import get_cfg_defaults
 from ppwc import PointConvSceneFlowPWC8192
@@ -23,9 +24,6 @@ def main(args):
     # data
     cases = [2, 8, 54, 55, 56, 94, 97, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114, 115, 116, 117, 118, 119,
              120, 121, 122, 123]
-    out_dict = {'predictions': [],
-                'case_list': cases,
-                'keypts_src': []}
 
     # Inference
     model.eval()
@@ -58,10 +56,9 @@ def main(args):
                 pred_flow = pred_flows[0].permute(0,2,1)
 
         pred_flow = pred_flow * cfg.INPUT.SCALE_NORM_FACTOR + pre_align_flow
-        out_dict['predictions'].append(pred_flow.cpu())
-        out_dict['keypts_src'].append(pcd_src_orig.cpu())
 
-    torch.save(out_dict, args.outfile)
+        tensor_to_save = torch.cat((pcd_src_orig + pred_flow, pcd_src_orig), dim=2)[0]
+        np.savetxt(os.path.join(args.outfile, 'case_{:03d}.csv'.format(case)), tensor_to_save.cpu().numpy(), delimiter=",", fmt='%.3f')
 
 
 if __name__ == "__main__":
