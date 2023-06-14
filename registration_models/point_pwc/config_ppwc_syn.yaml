@@ -1,4 +1,4 @@
-BASE_DIRECTORY: '/share/data_sam2/bigalke/results/registration/neurips_final'
+BASE_DIRECTORY: 'train_out'
 EXPERIMENT_NAME: 'syn_augm'
 NUM_WORKERS: 8
 USE_AMP: False

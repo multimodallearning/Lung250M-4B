@@ -17,4 +17,5 @@ dependencies:
   - yacs=0.1.6=py_0
   - pip:
     - open3d==0.15.2
+    - pandas==1.2.0
 
