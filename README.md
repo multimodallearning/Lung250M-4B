@@ -96,7 +96,7 @@ To get a first glance into the dataset and benchmark solution follow the next fe
 
 ## inference with pre-trained models
 - for Voxelmorph++ (VM++ w/ IO in the paper), execute `python registration_models/inference_vxmpp.py` while setting the correct data paths and output paths in the command line, following the description in the main function of the file.
-- for PointPWC-Net, move to `registration_models/point_pwc` and follow the isntructions in the separate readme.
+- for PointPWC-Net, move to `registration_models/point_pwc` and follow the instructions in the separate readme.
 
 ## evaluation and visualization
 Once the displacement fields are inferred (the ones for VM++ are already available in `predict_vxmpp` ) you can both visualize the registrations and just print the case-wise errors as follows.
