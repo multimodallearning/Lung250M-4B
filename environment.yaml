@@ -21,4 +21,5 @@ dependencies:
     - pandas==1.2.0
     - gdown==4.7.1
     - SimpleITK==2.2.1
+    - selenium==4.10.0
 
