@@ -14,19 +14,21 @@ sys.path.insert(0, 'corrfield/')
 
 from thin_plate_spline import thin_plate_dense
 
-
-# torch.backends.cuda.matmul.allow_tf32 = False
-# torch.backends.cudnn.allow_tf32 = False
+#torch.backends.cuda.matmul.allow_tf32 = False
+#torch.backends.cudnn.allow_tf32 = False
 
 def main(args):
     base_img = args.imgfolder
-    img_list = [i.split('/')[1] for i in sorted(glob(base_img + '/*.nii.gz'))]
+    img_list = [i.split('/')[-1] for i in sorted(glob(base_img + '/*.nii.gz'))]
 
     img_list1 = [i.replace('_1.nii.gz', '').replace('_2.nii.gz', '') for i in img_list]
     if (len(img_list1) != 2 * len(set(img_list1))):
         raise Exception("Not all images seem to have both _1.nii.gz and _2.nii.gz")
     case_list = sorted(list(set(img_list1)))
 
+    aggregate_val = []
+    aggregate_test = []
+    
     for i in range(len(case_list)):
         case = str(case_list[i])
 
@@ -62,7 +64,23 @@ def main(args):
         tre2 = (lms_validation[str(ii)][:, :3] + lms_disp - lms_validation[str(ii)][:, 3:]).pow(2).sum(-1).sqrt()
 
         print('tre0', '%0.3f' % tre0.mean(), 'tre_aff', '%0.3f' % tre_aff.mean(), 'tre2', '%0.3f' % tre2.mean())
+        if((i>=104)&(i<=113)):
+            aggregate_test.append(tre2)
+        else:
+            aggregate_val.append(tre2)
+    agg_test = torch.cat(aggregate_test)
+    agg_val = torch.cat(aggregate_val)
 
+    print('======= SUMMARY RESULTS ======')
+    print("Validation (see Supplement Tab. 3)")
+    print('mean: '+str('%0.2f'%agg_val.mean()),' 25: '+str('%0.2f'%agg_val.quantile(.25)),' 50%: '+str('%0.2f'%agg_val.median()),' 25%: '+str('%0.2f'%agg_val.quantile(.75)))
+    print("Test (see main paper Tab. 2)")
+    print('mean: '+str('%0.2f'%agg_test.mean()),' 25%: '+str('%0.2f'%agg_test.quantile(.25)),' 50%: '+str('%0.2f'%agg_test.median()),' 25%: '+str('%0.2f'%agg_test.quantile(.75)))
+
+                                                                                                                                                                            
+                                                                                                            
+              
+              
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='evaluate Lung250M-4B registrations')
