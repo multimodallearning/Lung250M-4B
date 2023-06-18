@@ -140,13 +140,13 @@ As SOTA approach for deformable point-cloud registration we employ **Point-PWC N
 # Results
 The following table compares both variants of the two orthogonal approaches of 3D deformable registration (imaged-based or point-based methods) quantitatively in terms of TRE (in mm) on our new Lung250M-4B dataset.
 
-![Table of TRE](figures_pdf/neurips_table2.pdf)
+![Table of TRE](figures_pdf/neurips_table2.png)
 
 To get a better visual impression of the challenges of 3D lung registration and the differences in representation of this data as 3D volumetric scans or sparse geometric point clouds the following two figures from our supplementary material show before and after overlays of three different registration pairs from Lung250M-4B.
 
-![Visual Vxmpp](figures_pdf/reg_example.pdf)
+![Visual Vxmpp](figures_pdf/reg_example.png)
 
-![Visual ppwc](figures_pdf/qual_results_ppwc.pdf)
+![Visual ppwc](figures_pdf/qual_results_ppwc.png)
 
 
 
