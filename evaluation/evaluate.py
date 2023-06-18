@@ -64,7 +64,7 @@ def main(args):
         tre2 = (lms_validation[str(ii)][:, :3] + lms_disp - lms_validation[str(ii)][:, 3:]).pow(2).sum(-1).sqrt()
 
         print('tre0', '%0.3f' % tre0.mean(), 'tre_aff', '%0.3f' % tre_aff.mean(), 'tre2', '%0.3f' % tre2.mean())
-        if((i>=104)&(i<=113)):
+        if((ii>=104)&(ii<=113)):
             aggregate_test.append(tre2)
         else:
             aggregate_val.append(tre2)
