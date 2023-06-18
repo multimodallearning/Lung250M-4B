@@ -20,4 +20,5 @@ dependencies:
     - open3d==0.15.2
     - pandas==1.2.0
     - gdown==4.7.1
+    - SimpleITK==2.2.1
 
