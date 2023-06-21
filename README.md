@@ -19,7 +19,7 @@ To get a first glance into the dataset and benchmark solution follow the next fe
 1) `git clone`
 2) put the dataset into the main directory of the repository to obtain the data structure shown below.
 3) create a new conda environment with the required dependencies via `conda env create -f environment.yaml`
-4) for training of and inference with PointPWC-Net, please compile the `pointnet2_utils` via `cd registration_models/point_pwc/pointnet2`, `python setup.py install` 
+4) for training of and inference with PointPWC-Net, please compile the `pointnet2_utils` via `cd registration_models/point_pwc/pointnet2/lib`, `python setup.py install` 
 
 ## Dataset structure
 ```
