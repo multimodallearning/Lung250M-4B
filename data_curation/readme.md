@@ -43,6 +43,7 @@ on a headless server you may ignore warnings about 'xdg-desktop-menu: not found'
 
 We provide a pre-trained nnUNet model for lung segmentation, from our cloud folder of the dataset download the file nnUNet_Task500_Lung.zip and
 extract zip file and set ```export RESULTS_FOLDER=nnUNet_trained_models```
+
 3) You need to copy the files to names with ending _0000.nii.gz:
 ```
 mkdir tmp_img_0000; mkdir temp_mask
