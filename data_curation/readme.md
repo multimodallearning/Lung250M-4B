@@ -39,7 +39,7 @@ sudo -S dpkg -i nbia-data-retriever-4.4.deb
 on a headless server you may ignore warnings about 'xdg-desktop-menu: not found'.
 
 2) Next (given all globale prerequisites are installed) you can run the following command to process all cases out of 114..123:
-```python nbia_pydicom_pre.py --manifest nlst_test_ni.csv --imgfolder img_temp/``
+```python nbia_pydicom_pre.py --manifest nlst_test_ni.csv --imgfolder img_temp/```
 
 We provide a pre-trained nnUNet model for lung segmentation, from our cloud folder of the dataset download the file nnUNet_Task500_Lung.zip and
 extract zip file and set ```export RESULTS_FOLDER=nnUNet_trained_models```
