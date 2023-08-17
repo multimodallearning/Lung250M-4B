@@ -95,6 +95,17 @@ To get a first glance into the dataset and benchmark solution follow the next fe
     │       └── ...
     └── ...
 ```
+The following case numbers belong to images from respective sub-datasets:
+
+000-010: Empire10 \
+012-033: TCIA-NLST \
+034-053: TCIA-NSCLC \
+054-083: L2R-LungCT \
+084-103: TCIA-Ventilation \
+104-113: DIR-LAB COPDgene \
+114-123: TCIA-NLST (Validation)
+
+Cases 002, 008, 054, 055, 056, 094, 097 and 113-123 are validation cases. Cases 104-113 are test cases.
 
 ## inference with pre-trained models
 - for Voxelmorph++ (VM++ w/ IO in the paper), execute `python registration_models/inference_vxmpp.py --outfolder predict_vxmpp` while setting the correct data paths and output paths in the command line, following the description in the main function of the file.
@@ -138,9 +149,17 @@ As SOTA approach for deformable point-cloud registration we employ **Point-PWC N
 "PointPWC-Net: Cost volume on point clouds for (self-) supervised scene flow estimation." by Wu, Wenxuan, Zhi Yuan Wang, Zhuwen Li, Wei Liu, and Li Fuxin.  In Computer Vision–ECCV 2020: 16th European Conference, Glasgow, UK, August 23–28, 2020, Proceedings, Part V 16, pp. 88-107. Springer International Publishing, 2020. (https://arxiv.org/abs/1911.12408). 
 
 # Results
-The following table compares both variants of the two orthogonal approaches of 3D deformable registration (imaged-based or point-based methods) quantitatively in terms of TRE (in mm) on our new Lung250M-4B dataset.
+The following table compares both variants of the two orthogonal approaches of 3D deformable registration (left: imaged-based methods, right: point-based methods) quantitatively in terms of mean TRE (in mm) and 25/50/75% percentiles on our new Lung250M-4B dataset. IO: instance optimisation
 
-![Table of TRE](figures_pdf/neurips_table2.png)
+| Method | TRE | 25% | 50% | 75% | Method | TRE | 25% | 50% | 75% | 
+| :----- | :-: | :-: | :-: | :-: | :----- | :-: | :-: | :-: | :-: |
+| initial | 16.25 | 10.14 | 15.94 | 21.76 | initial | 16.25 | 10.14 | 15.94 | 21.76 |
+| corrField | 1.45 | 0.83 | 1.23 | 1.77 | CPD | 3.13 | 1.51 | 2.28 | 3.58 |
+| deeds | 1.53 | 0.83 | 1.22 | 1.79 | CPD with labels | 2.59 | 1.36 | 2.01 | 3.16 |
+| Voxelmorph+ without IO | 6.53 | 3.38 | 5.82 | 8.50 | PPWC supervised | 2.85 | 1.52 | 2.33 | 3.54 |
+| Voxelmorph+ with IO | 4.31 | 0.87 | 1.55 | 7.42 | PPWC synthetic | 2.73 | 1.52 | 2.28 | 3.45 |
+| Voxelmorph++ without IO | 4.47 | 2.41 | 3.74 | 5.69 | | | | | |
+| Voxelmorph++ with IO | 2.26 | 0.75 | 1.16 | 1.90 | | | | | |
 
 To get a better visual impression of the challenges of 3D lung registration and the differences in representation of this data as 3D volumetric scans or sparse geometric point clouds the following two figures from our supplementary material show before and after overlays of three different registration pairs from Lung250M-4B.
 
