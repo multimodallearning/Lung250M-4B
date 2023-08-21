@@ -161,6 +161,8 @@ The following table compares both variants of the two orthogonal approaches of 3
 | Voxelmorph++ without IO | 4.47 | 2.41 | 3.74 | 5.69 | | | | | |
 | Voxelmorph++ with IO | 2.26 | 0.75 | 1.16 | 1.90 | | | | | |
 
+If you would like your own (verifiable) results to be included here, please contact us.
+
 To get a better visual impression of the challenges of 3D lung registration and the differences in representation of this data as 3D volumetric scans or sparse geometric point clouds the following two figures from our supplementary material show before and after overlays of three different registration pairs from Lung250M-4B.
 
 ![Visual Vxmpp](figures_pdf/reg_example.png)
