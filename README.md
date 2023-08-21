@@ -10,7 +10,7 @@ The code repository comprises several complementary parts:
 4) Registration Models: Two versions of an image-based deep learning model to predict large deformable 3D motion (VoxelMorph++) is provided with scripts for training, testing and pre-trained models (variant 1 uses an unsupervised metric loss, whereas variant 2 uses the CorrField keypoints). Two versions of a state-of-the-art 3D point cloud registration algorithm (PointPWC) are adapted to the given datasets. Namely, an unsupervised version that purely relies on synthetically generated ground truth deformations, and a supervised version that leverages the image-based CorrField ground truth.
 5) Evaluation: Landmark files, evaluation functions and visualisation code (streamlit) is also provided to assess results and the dataset both qualitatively and quantitatively. 
 
-After the quick start guide you can find more details about the benchmark methods and visualisations under "Benchmarks" and "Results" 
+After the quick start guide you can find more details about the benchmark methods and visualisations under "Benchmarks" and "Results". If you are interesent to make your research results on Lung250M-4B publically available under this GitHub, please contact us, so we can add it to this page.
 
 # Quick start
 To get a first glance into the dataset and benchmark solution follow the next few steps to download an evaluation subset, run inference of point-cloud and/or image-based registration, evaluate their accuracy and visualise the overlay after registration
