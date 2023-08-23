@@ -12,7 +12,7 @@ The code repository comprises several complementary parts:
 
 After the quick start guide you can find more details about the benchmark methods and visualisations under "Benchmarks" and "Results".
 
-If you are interesent to make your research results on Lung250M-4B publically available under this repository, please contact us, so we can add it to this page.
+If you are interesent to make your research results on Lung250M-4B publicly available under this repository, please contact us, so we can add it to this page.
 
 # Quick start
 To get a first glance into the dataset and benchmark solution follow the next few steps to download an evaluation subset, run inference of point-cloud and/or image-based registration, evaluate their accuracy and visualise the overlay after registration
