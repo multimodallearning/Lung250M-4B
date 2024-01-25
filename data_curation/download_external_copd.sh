@@ -1,0 +1,11 @@
+#!/bin/bash
+wget --load-cookies cookies10.txt -O copd10.zip 'https://www.dropbox.com/s/ajm1w7lmr9azwcg/copd10.zip?dl=1&file_subpath=%2Fcopd10%2Fcopd10_eBHCT.img'
+wget --load-cookies cookies9.txt -O copd9.zip 'https://www.dropbox.com/s/eqjqz6ziwm5eycf/copd9.zip?dl=1&file_subpath=%2Fcopd9%2Fcopd9_eBHCT.img'
+wget --load-cookies cookies8.txt -O copd8.zip 'https://www.dropbox.com/s/hz9jo9vcvgvdcv8/copd8.zip?dl=1&file_subpath=%2Fcopd8%2Fcopd8_eBHCT.img'
+wget --load-cookies cookies7.txt -O copd7.zip 'https://www.dropbox.com/s/ru79sj8o95c522l/copd7.zip?dl=1&file_subpath=%2Fcopd7%2Fcopd7_eBHCT.img'
+wget --load-cookies cookies6.txt -O copd6.zip 'https://www.dropbox.com/s/b7u0yonvojskn1d/copd6.zip?dl=1&file_subpath=%2Fcopd6%2Fcopd6_eBHCT.img'
+wget --load-cookies cookies5.txt -O copd5.zip 'https://www.dropbox.com/s/nhx4pjntjsy5058/copd5.zip?dl=1&file_subpath=%2Fcopd5%2Fcopd5_eBHCT.img'
+wget --load-cookies cookies4.txt -O copd4.zip 'https://www.dropbox.com/s/saboio1cn8h3bg2/copd4.zip?dl=1&file_subpath=%2Fcopd4%2Fcopd4_eBHCT.img'
+wget --load-cookies cookies3.txt -O copd3.zip 'https://www.dropbox.com/s/vo9estp2yfaiqoq/copd3.zip?dl=1&file_subpath=%2Fcopd3%2Fcopd3_eBHCT.img'
+wget --load-cookies cookies2.txt -O copd2.zip 'https://www.dropbox.com/s/hz0xkkxkf87le7p/copd2.zip?dl=1&file_subpath=%2Fcopd2%2Fcopd2_eBHCT.img'
+wget --load-cookies cookies1.txt -O copd1.zip 'https://www.dropbox.com/s/3rh2k4rq4scr1nr/copd1.zip?dl=1&file_subpath=%2Fcopd1%2Fcopd1_eBHCT.img'
